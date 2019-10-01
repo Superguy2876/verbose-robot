@@ -1,0 +1,65 @@
+<html>  
+   <head>
+    <title>Demo page</title>
+	<style>
+	 li { color: Purple; }	
+	
+	img { width: 150px; }	
+
+	</style>
+ 	
+
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>    
+	<script>      
+	$(document).ready(function() {
+
+        $("#list1 li").click(function() {
+          var item = $(this);
+	}
+	</script>
+    	
+    <script>
+      $(document).ready(setupGame);
+
+      function setupGame() {
+        var animalList = [ 'Cat', 'wabbit', 'Alpaca', 'Doggie', 'Ferret', 'Ginnipig', 'chicken', 'Dragon', 'Pikachu', 'Unicorn' ];
+          for(var i=0; i < 5; i++) {
+    	  addRandomAnimal(animalList);
+  	  }
+	}
+	
+	function addAnimal(animal) {
+	 list1=$("#list1");
+	 if (animal == "Cat")
+	 {animal = '<img src="cat.jpg">';
+	}
+	 newanimal="<li>"+ animal + "</li>";
+	 list1.append(newanimal);
+	}
+	       
+	function addRandomAnimal(animalList) {
+ 	 var animalListCount = animalList.length;
+  	 var animalIndex = Math.floor(Math.random() * animalListCount);
+  	 var animal = animalList[animalIndex];
+  	 addAnimal(animal);
+	}
+
+      function clickListItem() {
+        var item = $(this);
+        var list2 = $("#list2");
+        item.remove();
+        list2.append(item);
+      }
+    </script>
+  </head>
+  <body>
+    <h2>List 1</h2>
+    <ul id="list1">
+    </ul>
+
+    <h2>List 2</h2>
+    <ul id="list2">
+    </ul>
+
+  </body>
+</html>

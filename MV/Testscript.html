@@ -1,0 +1,53 @@
+<html>
+  <head>
+    <title>Demo page</title>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script>
+      $(document).ready(setupGame);
+
+      function setupGame() {
+        alert('It just loaded quickly');
+        var animalList = [ 'Web Dev', 'Dog', 'Rabbit', 'Cat', 'Giraffe', 'Dragon', 'Human', 'Ant', 'Hedgehog', 'Echidna', 'Puppy', 'Dinosaur', 'T-Rex', 'Elephant', 'Shark', 'Baby human', 'Elderly human', 'Kitten' ];
+        for(var i=0; i < 16; i++) {
+            addRandomAnimal(animalList);
+            }
+          }
+
+function addRandomAnimal(animalList) {
+  var animalListCount = animalList.length;
+  var animalIndex = Math.floor(Math.random() * animalListCount);
+  var animal = animalList[animalIndex];
+  addAnimal(animal);
+}
+        
+
+      function addAnimal(animal) {
+        var list1 = $("#list1");
+        var newItem = $("<li>" + animal + "</li>");
+        list1.append(newItem);
+        newItem.click(clickListItem);
+      }
+
+      function clickListItem() {
+        var item = $(this);
+        var list2 = $("#list2");
+        item.remove();
+        list2.append(item);
+      }
+    </script>
+  </head>
+  <body>
+
+    <h1>This is the coolest web page</h1>
+    <p>These are my animals, <strong>DON'T STILL THEM FROM M--</strong></p>
+    
+    <h2>Wild animals</h2>
+    <ul id="list1">
+    </ul>
+
+    <h2>Captured</h2>
+    <ul id="list2">
+    </ul>
+
+  </body>
+</html>

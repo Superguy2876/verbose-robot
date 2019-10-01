@@ -1,0 +1,73 @@
+<html>  
+   <head>
+    <title>Demo page</title>
+	<style>
+	 li { color: Purple; }	
+	
+	img { width: 150px; }	
+
+	</style>
+ 	
+
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>    
+    	
+    <script>
+      $(document).ready(setupGame);
+
+	function setupGame() {
+		var animalList = [ 'Cat', 'Wabbit', 'Alpaca', 'Doggie', 'Ferret', 'guinea pig', 'Chicken', 'Dragon', 'Charles', 'Unicorn' ];
+		for(var i=0; i < 5; i++) {
+			addRandomAnimal(animalList);
+		}
+		$("#list1 li").click(clickListItem);
+	}
+	
+	function addAnimal(animal) {
+		list1=$("#list1");
+		newanimal="<li><img src='"+ animal + ".jpg'></li>";
+		list1.append(newanimal);
+	}
+	       
+	function addRandomAnimal(animalList) {
+		var animalListCount = animalList.length;
+		var animalIndex = Math.floor(Math.random() * animalListCount);
+		var animal = animalList[animalIndex];
+		addAnimal(animal);
+	}
+
+	function clickListItem() {
+		clickCounter();
+		var item = $(this);
+		var list2 = $("#list2");
+		item.remove();
+		var randomNumber = Math.floor(Math.random() * 100);
+		if(randomNumber > 50) {
+			alert('You caught the animal!');
+			list2.append(item);
+		}
+		else {
+			alert('The animal got away!');
+		}      
+	}
+
+	function clickCounter() {
+		if (localStorage.clickcount) {
+			localStorage.clickcount = Number(localStorage.clickcount) + 1;
+		} else {
+			localStorage.clickcount = 1;
+		}
+		console.log("You have clicked the button " + localStorage.clickcount + " time(s).");
+	}
+    </script>
+  </head>
+  <body>
+    <h2>List 1</h2>
+    <ul id="list1">
+    </ul>
+
+    <h2>List 2</h2>
+    <ul id="list2">
+    </ul>
+
+  </body>
+</html>
