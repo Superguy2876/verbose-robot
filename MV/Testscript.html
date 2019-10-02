@@ -8,10 +8,8 @@
       function setupGame() {
         alert('It just loaded quickly');
         var animalList = [ 'Web Dev', 'Dog', 'Rabbit', 'Cat', 'Giraffe', 'Dragon', 'Human', 'Ant', 'Hedgehog', 'Echidna', 'Puppy', 'Dinosaur', 'T-Rex', 'Elephant', 'Shark', 'Baby human', 'Elderly human', 'Kitten' ];
-        for(var i=0; i < 16; i++) {
-            addRandomAnimal(animalList);
-            }
-          }
+  }
+}
 
 function addRandomAnimal(animalList) {
   var animalListCount = animalList.length;
@@ -20,7 +18,6 @@ function addRandomAnimal(animalList) {
   addAnimal(animal);
 }
         
-
       function addAnimal(animal) {
         var list1 = $("#list1");
         var newItem = $("<li>" + animal + "</li>");

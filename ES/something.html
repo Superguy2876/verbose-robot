@@ -1,65 +1,121 @@
 <html>  
-   <head>
-    <title>Demo page</title>
-	<style>
-	 li { color: Purple; }	
-	
-	img { width: 150px; }	
+    <head>
+        <title>Demo page</title>
+        <style>
+            li { color: Purple; }    
+            img { width: 150px; }    
+        </style>
 
-	</style>
- 	
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>    
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
+        <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js" integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og==" crossorigin=""></script>
+        <style>
+            #my-map {
+                height: 800px;
+            }
+            .target-list {
+                overflow: auto;
+                max-height: 240px;
+            }
+          </style>
+          <script>
 
-	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>    
-	<script>      
-	$(document).ready(function() {
+            var g_map;
+            var g_location;
 
-        $("#list1 li").click(function() {
-          var item = $(this);
-	}
-	</script>
-    	
-    <script>
-      $(document).ready(setupGame);
+            $(document).ready(function() {
+                navigator.geolocation.getCurrentPosition(setupGame);
+            });
 
-      function setupGame() {
-        var animalList = [ 'Cat', 'wabbit', 'Alpaca', 'Doggie', 'Ferret', 'Ginnipig', 'chicken', 'Dragon', 'Pikachu', 'Unicorn' ];
-          for(var i=0; i < 5; i++) {
-    	  addRandomAnimal(animalList);
-  	  }
-	}
-	
-	function addAnimal(animal) {
-	 list1=$("#list1");
-	 if (animal == "Cat")
-	 {animal = '<img src="cat.jpg">';
-	}
-	 newanimal="<li>"+ animal + "</li>";
-	 list1.append(newanimal);
-	}
-	       
-	function addRandomAnimal(animalList) {
- 	 var animalListCount = animalList.length;
-  	 var animalIndex = Math.floor(Math.random() * animalListCount);
-  	 var animal = animalList[animalIndex];
-  	 addAnimal(animal);
-	}
+            function setupGame(location) {
+                g_location = L.latLng(location.coords.latitude, location.coords.longitude);
+                createMap();
+            
+                var animalList = [ 'Cat', 'Wabbit', 'Alpaca', 'Doggie', 'Ferret', 'guinea pig', 'Chicken', 'Dragon', 'Charles', 'Unicorn' ];
+                for(var i=0; i < 5; i++) {
+                    addRandomAnimal(animalList);
+                }
 
-      function clickListItem() {
-        var item = $(this);
-        var list2 = $("#list2");
-        item.remove();
-        list2.append(item);
-      }
-    </script>
-  </head>
-  <body>
-    <h2>List 1</h2>
-    <ul id="list1">
-    </ul>
+                $("#list1 li").click(clickListItem);
+            }
 
-    <h2>List 2</h2>
-    <ul id="list2">
-    </ul>
+            function createMap() {
+                g_map = new L.Map('my-map');
 
-  </body>
+                new L.TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    zoom: 13,
+                    'attribution': 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
+                }).addTo(g_map);
+
+                g_map.setView(g_location, 16);
+            }
+
+            function getRandomPos(pos) {
+                var latitude = g_location.lat + (Math.random() * 0.02 - 0.01);
+                var longitude = g_location.lng + (Math.random() * 0.02 - 0.01)
+                return L.latLng(latitude, longitude);
+            }            
+
+            function addAnimal(animal) {
+                var pos = getRandomPos(g_location);
+                var markerIcon = L.icon({
+                    iconUrl: animal + '.jpg'
+                });
+                var marker = L.marker(pos, {icon: markerIcon}).addTo(g_map);
+
+                marker.on('click', function() {
+                    console.log('marker clicked!');
+                });
+                marker.bindPopup("Blargh");
+
+                list1 = $("#list1");
+                newanimal="<li><img src='"+ animal + ".jpg'></li>";
+                list1.append(newanimal);
+            }
+
+            function addRandomAnimal(animalList) {
+                var animalListCount = animalList.length;
+                var animalIndex = Math.floor(Math.random() * animalListCount);
+                var animal = animalList[animalIndex];
+                addAnimal(animal);
+            }
+
+            function clickListItem() {
+                var item = $(this);
+                var list2 = $("#list2");
+                item.remove();
+                var randomNumber = Math.floor(Math.random() * 100);
+                if(randomNumber > 50) {
+                    alert('You caught the animal!');
+                    list2.append(item);
+                }
+                else {
+                    alert('The animal got away!');
+                }      
+            }
+
+            function addAnimalToStorage(animalName) {
+                var animalStorage = getAnimalStorage();
+                animalStorage.push(animalName);
+                localStorage.setItem('animals', animalStorage);
+            }
+
+            function getAnimalStorage() {
+                return localStorage.getItem('animals') || [];
+            }
+        </script>
+    </head>
+    <body>
+    
+         <div id="my-map"></div>
+
+        <h2>List 1</h2>
+        <ul id="list1">
+        </ul>
+
+        <h2>List 2</h2>
+        <ul id="list2">
+        </ul>
+
+    </body>
 </html>

@@ -1,63 +1,125 @@
 <html>
-  <head>
-    <title>Demo page</title>
-    <style>
-    li { color: white; }
-    img {height:150px;
-         border: 1px black;
-	 
-         mix-blend-mode: normal; 
-	filter: invert(100%)
-	 
-}
-    body{background-color:black;}
+    <head>
+        <title>Demo page</title>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
+        <style>
+            h2 { color: white; }
+            img {
+                height:150px;
+                border: 1px black;
+                mix-blend-mode: normal; 
+                filter: invert(100%)
+            }
+            body{background-color:black;}
+            #my-map {
+                height: 300px;
+            }
+            .target-list {
+                overflow: auto;
+                max-height: 240px;
+            }
+        </style>
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+        
+        <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js" integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og==" crossorigin=""></script>
+        <script>
+            Storage.prototype.setObject = function(key, value) {
+                this.setItem(key, JSON.stringify(value));
+            }
+            Storage.prototype.getObject = function(key) {
+                var value = this.getItem(key);
+                return value && JSON.parse(value);
+            }
 
-    </style>
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script>
-      $(document).ready(setupGame);
+            $(document).ready(setupGame);
 
-      function setupGame() {
-      var animalList = [ 'aardvark','bear','crocodile','deer','elephant','fox','gekko','horse','iguana','jaguar','kiwi','llama','monkey','newt','otter','peacock','quail','rhino','shark','tortoise','unicorn','vampire bat','wolf','x-ray fish','yak','zebra' ];
-      for(var i=0; i < 5; i++) {
-     addRandomAnimal(animalList);
-     }
-     }
+            function setupGame() {
+                var animalList = [ 'aardvark','bear','crocodile','deer','elephant','fox','gekko','horse','iguana','jaguar','kiwi','llama','monkey','newt','otter','peacock','quail','rhino','shark','tortoise','unicorn','vampire bat','wolf','x-ray fish','yak','zebra' ];
+                for(var i=0; i < 5; i++) {
+                    addRandomAnimal(animalList);
+                }
+                createMap();
 
-      function addAnimal(animal) {
-        var list1 = $("#list1");
-        var newItem = $("<img src=" + animal + ".png style=''>");
-        list1.append(newItem);
-        newItem.click(clickListItem);
-      }
-      function addRandomAnimal(animalList) {
-      var animalListCount = animalList.length;
-      var animalIndex = Math.floor(Math.random() * animalListCount);
-      var animal = animalList[animalIndex];
-      addAnimal(animal);
-      }
+                var animalStorage = getAnimalStorage();
+                animalStorage.forEach(function(animal) {
+                    console.log(animal);
+                    // create a list item for 'animal' and add it to '#list2'
+                    
+                });
+            }
 
-      function clickListItem() {
-        var item = $(this);
-        var list2 = $("#list2");
-        item.remove();
-        list2.append(item);
-      }
-    </script>
-  </head>
-  <body>
-    <h2>List 1</h2>
-    <ul id="list1">
-    </ul>
+            function addAnimal(animal) {
+                var list1 = $("#list1");
+                var newItem = $("<img src=" + animal + ".png style='' alt=>");
+                list1.append(newItem);
+                newItem.click(function() {
+                    var chance = Math.floor(Math.random() * 100);
+                    var item = $(this);
+                    if(chance > 50) {
+                        console.log("Caught!");
+                        var list2 = $("#list2");
+                        item.remove();
+                        list2.append(item);
+                        addAnimalToStorage(animal);
+                    }
+                    else {
+                        console.log("Missed!");
+                        item.remove();
+                    }
+                });
+            }
+            function addRandomAnimal(animalList) {
+                var animalListCount = animalList.length;
+                var animalIndex = Math.floor(Math.random() * animalListCount);
+                var animal = animalList[animalIndex];
+                addAnimal(animal);
+            }
 
-    <h2>List 2</h2>
-    <ul id="list2">
-    </ul>
+            function addAnimalToStorage(animalName) {
+                var animalStorage = getAnimalStorage();
+                animalStorage.push(animalName);
+                localStorage.setItem('animals', JSON.stringify(animalStorage));
+            }
+            
+            function getAnimalStorage() {
+                var animals = localStorage.getItem('animals');
+                if(animals) {
+                    return JSON.parse(animals);
+                } else {
+                    return [];
+                }
+            }
 
-  </body>
+        function createMap() {
+            var map = new L.Map('my-map');
+            
+
+            new L.TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                zoom: 13,
+                'attribution': 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            navigator.geolocation.getCurrentPosition(function(location) {
+                deviceLocation = L.latLng(location.coords.latitude, location.coords.longitude);
+                map.setView(deviceLocation, 16);
+            });
+            L.marker([51.5, -0.09]).addTo(map)
+            .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
+            .openPopup();
+        }
+
+        </script>
+    </head>
+    <body>
+
+        <h2>WILD</h2>
+        <ul id="list1">
+        </ul>
+
+        <h2>Caught :)</h2>
+        <ul id="list2">
+        </ul>
+        <div id="my-map"></div>
+    </body>
 </html>
-
-
-
-
 
