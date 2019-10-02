@@ -1,0 +1,59 @@
+<html>
+    <head>
+        <title>Storage Time!</title>
+        <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+
+        <script>
+            $(document).ready(loadList);
+
+            function textToList()
+            {
+                var boxText = $('#abox').val();
+                $('#alist').append( "<li>" + boxText + "</li>" );
+                saveList();
+
+            }
+
+            function saveList()
+            {
+                var toSave = [];
+                $('li').each ( function (i,n) {
+                    toSave.push($(n).text());
+                });
+                save (toSave);
+            }
+
+            function loadList()
+            {
+
+                myTextList = load('myText');
+                myTextList.forEach(function(element) {
+                    $('#alist').append( "<li>" + element + "</li>" );
+                });
+            }
+
+            function save (saveMe)
+            {
+                var stringyThing = JSON.stringify(saveMe);
+                localStorage.setItem('myText', stringyThing);
+            }
+
+            function load (toLoad)
+            {
+
+                return JSON.parse(localStorage.getItem(toLoad));
+            }
+        </script>
+    </head>
+    <body>
+        <h1>Lets see how to save stuff!</h1>
+        <h2>Storage Time</h2>
+        <div>Type somehting into this box! <input type="text" id="abox"></div>
+        <div>Do the thing! ---> <button type="button" onclick="textToList()" id="abutton">Click Me!</button></div>
+        
+        <h3>Even when you reload the page, this list will still be here!</h3>
+        <ul id="alist">
+
+        </ul>
+    </body>
+</html>
