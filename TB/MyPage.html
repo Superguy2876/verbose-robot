@@ -1,0 +1,132 @@
+<html>
+  <head>
+    <title>A Page</title>
+    <style>
+      .wild h2 {color: green;}
+      .wild li {color: brown;}
+      .captured h2 { color: red; }
+      .captured li { color: orange; }
+      img { width: 120px; }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script>
+      $(document).ready(setupGame);
+
+      function setupGame() {
+        var animalList = [
+          { 'name': 'Dog', 'image': 'Dog.png', chance: 80 },
+          { 'name': 'Cat', 'image': 'Cat.png', chance: 75 },
+          { 'name': 'Fish', 'image': 'Fish.png', chance: 60 },
+          { 'name': 'Mouse', 'image': 'Mouse.png', chance: 65 },
+          { 'name': 'Spider', 'image': 'Spider.png', chance: 90 },
+          { 'name': 'Parrot', 'image': 'Parrot.png', chance: 80 },
+          { 'name': 'Penguin', 'image': 'Penguin.png', chance: 99 },
+          { 'name': 'Crow', 'image': 'Crow.png', chance: 10 },
+          { 'name': 'Wolf', 'image': 'Wolf.png', chance: 5 },
+          { 'name': 'Dragon', 'image': 'Dragon.png', chance: 1 }
+        ];
+        for(var i=0; i < 6; i++) {
+          addRandomAnimal(animalList);
+        }
+        loadList();
+      }
+
+      function addRandomAnimal(animalList) {
+        var animalListCount = animalList.length;
+        var animalIndex = Math.floor(Math.random() * animalListCount);
+        var animal = animalList[animalIndex];
+        addAnimal(animal);
+      }
+
+      function addAnimal(animal) {
+        var Wild = $(".wild ul");
+        var image = "<img src='" + animal['image'] + "'>";
+        var newItem = $("<li>" + animal['name'] + image + "</li>");
+        Wild.append(newItem);
+        newItem.click(function() {
+          captureAnimal(animal);
+          newItem.remove();
+        });
+      }
+
+      function captureAnimal(animal) {
+        var Inventory = $(".captured ul");
+        var randomNumber = Math.floor(Math.random() * 100);
+          if(randomNumber < animal['chance']) {
+            alert('You caught the animal!');
+            var image = "<img src='" + animal['image'] + "'>";
+            var newItem = $("<li>" + animal['name'] + image + "</li>");
+            Inventory.append(newItem);
+            saveList();
+          }
+          else {
+            alert('The animal got away!');
+          }
+
+      }
+      function clickListItem() {
+        var item = $(this);
+        var Inventory = $(".captured ul");
+        item.remove();
+        var randomNumber = Math.floor(Math.random() * 100);
+          if(randomNumber > 50) {
+            alert('You caught the animal!');
+            Inventory.append(item);
+            saveList();
+          }
+          else {
+            alert('The animal got away!');
+          }
+        
+      }
+
+      function saveList() {
+        var toSave = [];
+        $('.captured ul li').each ( function (i,n) {
+          toSave.push($(n).text());
+        });
+        save (toSave);
+      }
+
+      function loadList () { 
+       
+        var capturedAnimalList = load('capturedAnimalList');
+        console.log(capturedAnimalList);
+        var Inventory = $(".captured ul");
+        capturedAnimalList.forEach(function(animal) {
+          var imageSource = animal + ".png";
+        var image = "<img src='" + imageSource + "'>";
+        var saveItem = $("<li>" + animal + image + "</li>");
+          Inventory.append(saveItem);
+        })
+      }
+
+      function save (saveMe) {
+        var stringyThingy = JSON.stringify(saveMe);
+        localStorage.setItem('capturedAnimalList', stringyThingy);
+      }
+
+      function load (toLoad) {
+        return JSON.parse(localStorage.getItem(toLoad)) || [];
+      }
+
+    </script>
+  </head>
+  <body>
+
+    <div class="wild">
+      <h2>Wild</h2>
+      <ul>
+      </ul>
+    </div>
+    
+    <div class="captured">
+      <h2>Inventory</h2>
+      <ul>
+      </ul>
+    </div>
+
+
+
+  </body>
+</html>

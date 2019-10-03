@@ -1,0 +1,130 @@
+<html>
+  <head>
+    <title>Pocket Catcher</title>
+        <style>
+            li { color: 003cb3; }
+            img { width: 100px; }
+            .button {
+            background-color: #9494b8;
+            border: none;
+            color: #9494b8;
+            padding: 15px 25px;
+            text-align: center;
+            font-size: 16px;
+            cursor: pointer;
+}
+        </style>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script>
+        $(document).ready(setupGame);
+
+        function setupGame() {
+
+            var animalList = [
+                { 'name': 'Dog', 'image': 'Dog.png', 'chance': 100 },
+                { 'name': 'Rabbit', 'image': 'Rabbit.png', 'chance': 95 },
+                { 'name': 'Cat', 'image': 'Cat.png', 'chance': 85 },
+                { 'name': 'Giraffe', 'image': 'Giraffe.png', 'chance': 55 },
+                { 'name': 'Dragon', 'image': 'Dragon.png', 'chance': 35 },
+                { 'name': 'Pig', 'image': 'Pig.png', 'chance': 80 },
+                { 'name': 'Snake', 'image': 'Snake.png', 'chance': 65 },
+                { 'name': 'Chicken', 'image': 'Chicken.png', 'chance': 95 },
+                { 'name': 'Turtle', 'image': 'Turtle.png', 'chance': 100 },
+                { 'name': 'Unicorn', 'image': 'Unicorn.png', 'chance': 30 },
+                { 'name': 'Mongoose', 'image': 'Mongoose.png', 'chance': 80 }
+            ];
+
+            for(var i=0; i < 10; i++) {
+                addRandomAnimal(animalList);
+            }
+        }
+
+        function textToList()
+        {
+            var boxText = $('#list2').val();
+            $('#list2').append( "<li>" + boxText + "</li>" );
+            saveList();
+        }
+
+        function saveList()
+        {
+            var toSave = [];
+            $('#list2 li').each ( function (i,n) {
+                toSave.push($(n).text());
+            });
+            save (toSave);
+        }
+
+        function loadList()
+        {
+            var myTextList = load('myText');
+            $('#list2').empty();
+            myTextList.forEach(function(animalName) {
+                animalListItem = getAnimalListItem(animalName);
+                $('#list2').append(animalListItem);
+            });
+        }
+
+        function save (saveMe)
+        {
+            var stringyThing = JSON.stringify(saveMe);
+            localStorage.setItem('myText', stringyThing);
+        }
+
+        function load (toLoad)
+        {
+            return JSON.parse(localStorage.getItem(toLoad));
+        }
+
+
+        function addAnimal(animal) {
+            var list1 = $("#list1");
+            var newItem = getAnimalListItem(animal['name']);
+            list1.append(newItem);
+            newItem.click(function() {
+                captureAnimal(animal);
+                newItem.remove();
+            });
+        }
+
+        function addRandomAnimal(animalList) {
+            var animalListCount = animalList.length;
+            var animalIndex = Math.floor(Math.random() * animalListCount);
+            var animal = animalList[animalIndex];
+            addAnimal(animal);
+        }   
+
+        function getAnimalListItem(animalName) {
+            // <li>Dog <img src="Dog.png"></li>
+            return $('<li>' + animalName + '<img src="' + animalName + '.png"></li>');
+        }
+
+        function captureAnimal(animal) {
+            var randomNumber = Math.floor(Math.random() * 100);
+            var list2 = $('#list2');
+            if(randomNumber < animal['chance']) {
+                var newItem = getAnimalListItem(animal['name']);
+                alert('You caught the ' + animal['name'] + '!')
+                list2.append(newItem);
+                newItem.append("<br>" + animalImage + "</br>")
+            }
+            else {
+                alert('The ' + animal['name'] + ' ran away!')
+            }
+        }
+    </script>
+  </head>
+  <body bgcolor= #c2c2d6>
+
+<h2>Field</h2>
+    <ul id="list1">
+    </ul>
+
+    <h2>Captured</h2>
+    <ul id="list2">
+    </ul>
+    <button onclick= "saveList()">Save</button>
+    <button onclick="loadList()">Load</button>
+  </body>
+</html>
+

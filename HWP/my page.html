@@ -1,0 +1,121 @@
+<html>
+  <head>
+    <title>Cool page</title>
+    <style>
+        li { color: red; }
+        img { width: 150px; }
+         #my-map {
+                height: 450px;
+            }
+            .target-list {
+                overflow: auto;
+                max-height: 240px;
+            }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
+   
+    <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
+   integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
+   crossorigin=""></script>
+    <script>
+        $(document).ready(setupGame);
+        $(document).ready(createMap);
+        function createMap() {
+            var map = new L.Map('my-map');
+           
+            new L.TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                zoom: 13,
+                'attribution': 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
+            }).addTo(map);
+            navigator.geolocation.getCurrentPosition(function(location) {
+                deviceLocation = L.latLng(location.coords.latitude, location.coords.longitude);
+                map.setView(deviceLocation, 16);
+             var marker = L.marker(deviceLocation).addTo(mymap);
+            });
+     
+        }
+
+
+      function setupGame() {
+            var animalList = [ '<img src="dog.jpg">', '<img src="rabbit.jpg">', '<img src="cat.jpg">', '<img src="giraffe.png">', '<img src="dragon.jpg">', '<img src="pig.jpeg">', '<img src="snake.png">', '<img src="chicken.jpg">', '<img src="turtle.jpg">', '<img src="unicorn.png">' ];
+            for(var i=0; i < 5; i++) {
+                addRandomAnimal(animalList);
+            }
+            loadList();
+      }
+
+      function addAnimal(animal) {
+            var list1 = $("#list1");
+            var newItem = $("<li>" + animal + "</li>");
+            list1.append(newItem);
+            newItem.click(clickListItem);
+      }
+
+      function addRandomAnimal(animalList) {
+            var animalListCount = animalList.length;
+            var animalIndex = Math.floor(Math.random() * animalListCount);
+            var animal = animalList[animalIndex];
+            addAnimal(animal);
+ 
+      }
+
+      function clickListItem() {
+            var item = $(this);
+            var Inventory = $("#Inventory");
+            var randomNumber = Math.floor(Math.random() * 100);
+            item.remove();
+            if(randomNumber > 50) {
+                //alert('You caught the animal!');
+                console.log('You caught the animal!');
+                Inventory.append(item);
+                saveList();
+                }
+            else {
+                //alert('The animal got away!');
+                console.log('The animal got away!');
+            }
+      }
+        function save (saveMe)
+            {
+                var stringyThing = JSON.stringify(saveMe);
+                localStorage.setItem('myText', stringyThing);
+            }
+        function load (toLoad)
+            {
+                return JSON.parse(localStorage.getItem(toLoad));
+            }
+        function saveList()
+            {
+                var toSave = [];
+                $('#Inventory img').each ( function (i,n) {
+                    toSave.push($(n).attr('src'));
+                });
+                save (toSave);
+            }
+
+        function loadList()
+            {
+                myTextList = load('myText');
+                myTextList.forEach(function(element) {
+                    $('#Inventory').append( "<li> <img src='" + element + "'> </li>" );
+                });
+            }
+    </script>
+  </head>
+  <body>
+      
+
+    <h2>List 1</h2>
+    <ul id="list1">
+    </ul>
+
+    <h2>Inventory</h2>
+    <ul id="Inventory">
+    </ul>
+
+    <div id="my-map"></div>
+
+ 
+  </body>
+</html>

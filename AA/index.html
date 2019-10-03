@@ -1,0 +1,122 @@
+<html>
+  <head>
+    <title>Gokimon Po</title>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <style>
+        img { width: 150px; }
+        ul {list-style-type:none;}
+        table{
+            width:100%;
+        }
+        td {
+            text-align:center;
+            width:50%;
+        }
+    </style>
+    <script>
+      $(document).ready(setupGame);
+
+      function setupGame() {
+        var animalList = [ 'cow', 'crab', 'dog', 'dolphin', 'elephant', 'fish', 'fox', 'frog', 'giraffe', 'horse', 'lion', 'monkey', 'owl', 'panda', 'penguin', 'pig', 'skunk', 'squirrel', 'tiger', 'whale', 'zebra', 'sheep', 'snake' ];
+        /*
+        list{
+        {"name":'str',"name":'str'},
+        {"name":'str',"name":'str'},
+        {"name":'str',"name":'str'}
+        }
+        */
+            for(var i=0; i < 10; i++) {
+            addRandomAnimal(animalList);
+        }
+      }
+
+      function addAnimal(animal) {
+        var list1 = $("#Wild");
+        var pngFile = '<img src="' + animal + '.png" alt="' + animal + '">';
+        var newItem = $("<li>" + pngFile + "</li>");
+        list1.append(newItem);
+        newItem.click(clickListItem);
+      }
+
+      function clickListItem() {
+        var item = $(this);
+        var list2 = $("#Tame");
+        item.remove();
+        var randomNumber = Math.floor(Math.random() * 100);
+        if(randomNumber > 50) {
+            alert('You caught the animal!');
+            list2.append(item);
+            // get list from storage
+            // add item to list
+            // save list to storage
+            var saveItem = JSON.stringify(item);
+            localStorage.setItem("inv", localStorage.getItem('inv') + ',' + saveItem);
+        }
+        else {
+            alert('The animal got away!');
+        }
+      }
+      
+      function addRandomAnimal(animalList) {
+        var animalListCount = animalList.length;
+        var animalIndex = Math.floor(Math.random() * animalListCount);
+        var animal = animalList[animalIndex];
+        addAnimal(animal);
+      }
+      
+      function Load(){
+          // get list from storage
+          var loadItem = localStorage.getItem('inv');
+          console.log(loadItem);
+          loadItem.foreach(function(letter) {
+            alert(letter);
+            var name="";
+                if (letter != ","){
+                    name = name + letter;
+                }
+                if (letter == ","){
+                    reLoadAnimal(name);
+                }
+          });
+      }
+      
+      function reLoadAnimal(animal) {
+        var list1 = $("#Wild");
+        var pngFile = '<img src="' + animal + '.png" alt="' + animal + '">';
+        var newItem = $("<li>" + pngFile + "</li>");
+        var list2 = $("#Tame");
+        list2.append(newItem)
+      }
+      
+      // to get list from storage;
+      // get item from storage (with "localStroage.getItem"), and run "JSON.parse" on it (to convert it from a string to a javascript object)
+      
+      // to save list to storage;
+      // run "JSON.stringify" on it to convert the javascript object to a string, then use "localStorage.setItem"
+    </script>
+  </head>
+  <body>
+    <button onclick="Load()">Load</button>
+    <button onclick="Reset()">Load</button>
+    <table>
+        <tr>
+            <td>
+                <h2>Wild</h2>
+            </td>
+            <td>
+                <h2>Inventory</h2>
+            </td>
+        <tr>
+        <tr>
+            <td>
+               <ul id="Wild">
+                </ul>
+            </td>
+            <td>
+                <ul id="Tame">
+                </ul>
+            </td>
+        <tr>
+    </table>
+  </body>
+</html>
